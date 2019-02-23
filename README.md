@@ -1,4 +1,4 @@
-# Deploy a PREN stack on a AWS Using Packer, Ansible & Terraform.
+# Deploy a PREN stack on AWS Using Packer, Ansible & Terraform.
 
 ## Introduction
 This repository contains scripts that would enable you minimally setup your deployment to Amazon Web Services by just running a couple of commands.
@@ -11,6 +11,7 @@ This repository contains scripts that would enable you minimally setup your depl
 - [Ansible](https://docs.ansible.com/ansible/latest/index.html)
 - [Terraform](https://www.terraform.io/docs/index.html)
 - [AWS](aws.amazon.com)
+- [NGINX](https://www.nginx.com/)
 
 ### How to Build Amazon Machine Images (AMI) for your deployment
 
@@ -22,5 +23,14 @@ In order to create a machine image on AWS, please do the following:
   - `export AWS_SECRET_KEY=<paste your secret keys here>`
   - `export AWS_REGION=<paste your region here i.e. eu-west-1>`
 
-- After exporting the variables above, run the command `packer build packer/ubuntu_img.json` image build process.
+- After exporting the variables above, run the command `packer build packer/ubuntu_image.json` image build process.
   - After running the command you'll see the build flow on your terminal and you can also check your `AWS EC2 console` 
+
+
+### How To Launch AMIs With Terraform.
+To launch AMI machine images on AWS do the following 
+- Change directory into the `Terraform` folder by running this command `cd terraform` from your terminal
+- In the `terraform` directory, run the command `terraform init` 
+- Before running any other terraform commands, you should export this value `export AWS_AMI_ID=<AMI ID generated at the end of the packer build>` in the terminal.
+- After initialising the directory, run the command `terraform plan -var="access_key=${AWS_ACCESS_KEY}" -var="secret_key=${AWS_SECRET_KEY}" -var="region=${AWS_REGION}" -var=${AWS_AMI_ID}`
+- After running `terraform plan` above, run the command `terraform plan -var="access_key=${AWS_ACCESS_KEY}" -var="secret_key=${AWS_SECRET_KEY}" -var="region=${AWS_REGION}" -var=${AWS_AMI_ID} -auto-approve` to begin the process of launching the instance.
