@@ -32,5 +32,16 @@
       "OS": "Linux Ubuntu",
       "maintaner": "Ibraheem Idrees"
     }
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "script": "./ansible.sh"
+  },
+  {
+    "type": "ansible-local",
+    "playbook_file": "../ansible/playbook.main.yml",
+    "extra_arguments": [ "-vvvv" ],
+    "playbook_dir": "../ansible",
+    "role_paths":  ["../ansible/roles"]
   }]
 }

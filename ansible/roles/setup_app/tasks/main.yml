@@ -1,0 +1,52 @@
+#Remove default NGINX config and replace with app config
+- name: pre-configure NGINX removing default files
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  ignore_errors: yes
+
+- name: check if there a previous config and deletes
+  file:
+    path: /etc/nginx/sites-available/nginx-router
+    state: absent
+  ignore_errors: yes
+
+- name: Replace default NGINX config with user config
+  command: |
+    bash -c 'cat > /etc/nginx/sites-available/nginx-router <<EOF
+      server {
+        listen 80;
+        location / {
+          proxy_pass        http://127.0.0.1:5050;
+        }
+    }
+    EOF'
+
+- name: Create symnlink between the sites available and sites enabled dirs
+  file:
+    src: /etc/nginx/sites-available/nginx-router
+    dest: /etc/nginx/sites-enabled/nginx-router
+    state: link
+  notify:
+  - restart nginx
+
+# Install PM2 for background process running
+- name: Install PM2
+  command: npm install -g pm2
+
+# Install npm dependencies 
+# run build
+# use pm2 to startup app
+# configure pm2 to run app as a service
+- name: Install NPM dependencies
+  shell: |
+    cd /home/ubuntu/Events-Manager
+    export NODE_ENV=production
+    sudo npm install --unsafe-perm
+    sudo npm run build
+    echo ""
+    sudo pm2 start server/lib/server.js
+    sleep 20
+    sudo pm2 startup
+    sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+    sudo pm2 save

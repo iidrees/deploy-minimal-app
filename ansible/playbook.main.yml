@@ -1,0 +1,18 @@
+---
+- hosts: 127.0.0.1
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  vars_files: 
+    - ./vars.yml
+  #Tasks in this play are here 
+  roles:
+  - os_update
+  - clone_repo
+  - setup_app
+  # config handlers to restart NGINX service when it has been notified above
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
