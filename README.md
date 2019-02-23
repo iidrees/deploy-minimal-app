@@ -34,3 +34,12 @@ To launch AMI machine images on AWS do the following
 - Before running any other terraform commands, you should export this value `export AWS_AMI_ID=<AMI ID generated at the end of the packer build>` in the terminal.
 - After initialising the directory, run the command `terraform plan -var="access_key=${AWS_ACCESS_KEY}" -var="secret_key=${AWS_SECRET_KEY}" -var="region=${AWS_REGION}" -var=${AWS_AMI_ID}`
 - After running `terraform plan` above, run the command `terraform plan -var="access_key=${AWS_ACCESS_KEY}" -var="secret_key=${AWS_SECRET_KEY}" -var="region=${AWS_REGION}" -var=${AWS_AMI_ID} -auto-approve` to begin the process of launching the instance.
+
+### How To Automate the Above Steps
+
+In the root of the project, there is a `deploy.sh` script you can use to create both the `packer AMI` and deploy & launch the AMI created on AWS.
+
+To run the script, ensure that you all the necesary environment variables described above exported into the environment. Then run the command `./deploy.sh` and then watch the terminal to see how the deployment happens.
+
+### CLEANUP
+When you are done with EC2 instances created with the `deploy.sh` script, all you need to do in the root of the project is to run another script `./destroy.sh` in order to tear down all the resources created by the `./deploy.sh` script.
