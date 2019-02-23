@@ -1,0 +1,8 @@
+# Clone the project repository
+- name: Clone Github repository
+  git:
+    repo: "{{ REPO_URL }}"
+    dest: "/home/ubuntu/Events-Manager"
+    clone: yes
+    version: chore/deploy-on-aws/158841810
+    
